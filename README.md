@@ -77,14 +77,14 @@ If you need to tag resources created by your Kubernetes cluster (EBS volumes, EL
 
 Note: I have already created Images which located on AWS ECR.
 
-Lets Start deploy application.
+##Lets Start deploy application.
 
 
 ## create namespace.
 
 ```bash
 kubectl create ns name of namespace
-   
+
 ```
    
 ## Deploy Application
