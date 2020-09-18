@@ -225,3 +225,15 @@ Events:          <none>
 
 ```
 
+### Web1 output.
+
+![alt text](images/Image1.PNG)
+
+### Web2 output.
+
+![alt text](images/image2.gif)
+
+
+### Web3 output.
+
+![alt text](images/Image3.jpg)
