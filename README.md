@@ -108,7 +108,7 @@ web3-5944745648-tn9fv   1/1       Running   0          16h
 
 ```
 ```bash
-[centos@ip-10-79-196-128 ~]$ kubectl get svc -n palm
+[centos@ip-xxxxxx ~]$     kubectl get svc -n palm
 NAME      TYPE           CLUSTER-IP       EXTERNAL-IP                      PORT(S)          AGE
 web1      LoadBalancer   172.20.xxx.xx    x1.us-east-1.elb.amazonaws.com   8080:30267/TCP   16h
 web2      LoadBalancer   172.20.xxx.xx   x2.us-east-1.elb.amazonaws.com    8081:32759/TCP   16h
