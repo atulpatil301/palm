@@ -83,7 +83,7 @@ Note: I have already created Images which located on AWS ECR.
 ## create namespace.
 
 ```bash
-kubectl create ns name of namespace
+kubectl create ns palm
 
 ```
    
