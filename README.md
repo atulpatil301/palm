@@ -225,27 +225,3 @@ Events:          <none>
 
 ```
 
-
-<<<<<<< HEAD
-You can access the dashboard easily fro any computer with installed and configured `kubectl`:
-1) From coomand line start `kubectl proxy`
-2) Go to your browser and open [http://127.0.0.1:8001/ui](http://127.0.0.1:8001/ui)
-
-
-## Start Deployment Web Application
-
-Note: I have already created Images which located on AWS ECR.
-
-Lets Start deploy application.
-
-
-## create namespace.
-
-   kubectl create ns name of namespace
-   
-## Deploy Application
-
-kubectl create -f palm/pam.yml
-
-=======
->>>>>>> 98ccecdf4f5297cbecd138ae954cfbc494b5459d
