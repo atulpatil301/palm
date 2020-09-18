@@ -72,7 +72,6 @@ Custom addons can be added if needed. For every URL in the `addons` list, the in
 
 If you need to tag resources created by your Kubernetes cluster (EBS volumes, ELB load balancers etc.) check [this AWS Lambda function which can do the tagging](https://github.com/scholzj/aws-kubernetes-tagging-lambda).
 
-## Frequently Asked Questions
 
 ### How to access the Kubernetes Dashboard
 
@@ -81,3 +80,20 @@ The Kubernetes Dashboard addon is by default not exposed to the internet. This i
 You can access the dashboard easily fro any computer with installed and configured `kubectl`:
 1) From coomand line start `kubectl proxy`
 2) Go to your browser and open [http://127.0.0.1:8001/ui](http://127.0.0.1:8001/ui)
+
+
+## Start Deployment Web Application
+
+Note: I have already created Images which located on AWS ECR.
+
+Lets Start deploy application.
+
+
+## create namespace.
+
+   kubectl create ns name of namespace
+   
+## Deploy Application
+
+kubectl create -f palm/pam.yml
+
