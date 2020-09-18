@@ -4,7 +4,7 @@ AWS Kubernetes is a Kubernetes cluster deployed using [Kubeadm](https://kubernet
 
 
 ## Prerequisites and dependencies
-AWS Kubernetes deployes into an existing VPC / public subnet. If you don't have your VPC / subnet yet, you can use [this](https://github.com/scholzj/aws-vpc) configuration to create one. To deploy AWS Kubernetes there are no other dependencies apart from [Terraform](https://www.terraform.io). Kubeadm is used only on the EC2 hosts and doesn't have to be installed locally.
+AWS Kubernetes deployes into an existing VPC / public subnet. If you don't have your VPC / subnet yet, you can use configuration to create one. To deploy AWS Kubernetes there are no other dependencies apart from [Terraform](https://www.terraform.io). Kubeadm is used only on the EC2 hosts and doesn't have to be installed locally.
 
 ## Configuration
 
@@ -70,13 +70,163 @@ Custom addons can be added if needed. For every URL in the `addons` list, the in
 
 ## Tagging
 
-If you need to tag resources created by your Kubernetes cluster (EBS volumes, ELB load balancers etc.) check [this AWS Lambda function which can do the tagging](https://github.com/scholzj/aws-kubernetes-tagging-lambda).
+If you need to tag resources created by your Kubernetes cluster (EBS volumes, ELB load balancers etc.) 
 
 
-### How to access the Kubernetes Dashboard
+### Start Deployment Web Application
 
-The Kubernetes Dashboard addon is by default not exposed to the internet. This is intentional for security reasons (no authentication / authorization) and to save costs for Amazon AWS ELB load balancer.
+Note: I have already created Images which located on AWS ECR.
 
+##Lets Start deploy application.
+
+
+## create namespace.
+
+```bash
+kubectl create ns name of namespace
+
+```
+   
+## Deploy Application
+
+```bash
+kubectl create -f palm/pam.yml
+
+```
+
+## Describe deployments.
+
+```bash
+[centos@ip-xxxxxx ~]$ kubectl get pod -n palm
+NAME                    READY     STATUS    RESTARTS   AGE
+web1-794bddb69b-srg4b   1/1       Running   0          16h
+web1-794bddb69b-zjh7t   1/1       Running   0          16h
+web2-765cd77758-dv8tr   1/1       Running   0          16h
+web2-765cd77758-trrk5   1/1       Running   0          16h
+web3-5944745648-dqg4b   1/1       Running   0          16h
+web3-5944745648-tn9fv   1/1       Running   0          16h
+
+```
+```bash
+[centos@ip-10-79-196-128 ~]$ kubectl get svc -n palm
+NAME      TYPE           CLUSTER-IP       EXTERNAL-IP                      PORT(S)          AGE
+web1      LoadBalancer   172.20.xxx.xx    x1.us-east-1.elb.amazonaws.com   8080:30267/TCP   16h
+web2      LoadBalancer   172.20.xxx.xx   x2.us-east-1.elb.amazonaws.com    8081:32759/TCP   16h
+web3      LoadBalancer   172.20.xxx.xx    x3-east-1.elb.amazonaws.com      8082:31352/TCP   16h
+
+```
+### View the details of the deployed service.
+
+```bash
+
+[centos@ip-xxxxxxxxxxx ~]$ kubectl -n palm describe service web1
+Name:                     web1
+Namespace:                palm
+Labels:                   io.dev.service=web1
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"service.beta.kubernetes.io/azure-load-balancer-internal":"0.0.0.0/0"},"labels":{"io.dev...
+                          service.beta.kubernetes.io/azure-load-balancer-internal=0.0.0.0/0
+Selector:                 io.dev.service=web1
+Type:                     LoadBalancer
+IP:                       172.20.xxx.xx
+LoadBalancer Ingress:     x1.us-east-1.elb.amazonaws.com
+Port:                     8080  8080/TCP
+TargetPort:               80/TCP
+NodePort:                 8080  30267/TCP
+Endpoints:                10.79.xx.xx:80,10.79.xxx.x:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+[centos@ip-xxxxxxxxxxx ~]$ kubectl -n palm describe service web2
+Name:                     web2
+Namespace:                palm
+Labels:                   io.dev.service=web2
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"service.beta.kubernetes.io/azure-load-balancer-internal":"0.0.0.0/0"},"labels":{"io.dev...
+                          service.beta.kubernetes.io/azure-load-balancer-internal=0.0.0.0/0
+Selector:                 io.dev.service=web2
+Type:                     LoadBalancer
+IP:                       172.20.xxx.xxx
+LoadBalancer Ingress:     x2.us-east-1.elb.amazonaws.com
+Port:                     8081  8081/TCP
+TargetPort:               80/TCP
+NodePort:                 8081  32759/TCP
+Endpoints:                10.79.xxx.xx:80,10.79.xxx.xx:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+[centos@ip-xxxxxxxxxxx ~]$ kubectl -n palm describe service web3
+Name:                     web3
+Namespace:                palm
+Labels:                   io.dev.service=web3
+Annotations:              kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"service.beta.kubernetes.io/azure-load-balancer-internal":"0.0.0.0/0"},"labels":{"io.dev...
+                          service.beta.kubernetes.io/azure-load-balancer-internal=0.0.0.0/0
+Selector:                 io.dev.service=web3
+Type:                     LoadBalancer
+IP:                       172.20.xx.xxx
+LoadBalancer Ingress:     x3.us-east-1.elb.amazonaws.com
+Port:                     8082  8082/TCP
+TargetPort:               80/TCP
+NodePort:                 8082  31352/TCP
+Endpoints:                10.79.xxx.xxx:80,10.79.xxx.xx:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   <none>
+
+
+```
+
+### View the details of one of the pods that was deployed.
+
+```bash
+[centos@ip-xxxxxxxx ~]$ kubectl describe pod web1-794bddb69b-srg4b -n palm
+Name:               web1-794bddb69b-srg4b
+Namespace:          palm
+Priority:           0
+PriorityClassName:  <none>
+Node:               ip-10-79-xxx.xx.ec2.internal/10.79.xxx.xx
+Start Time:         Thu, 17 Sep 2020 15:00:27 +0000
+Labels:             io.dev.service=web1
+                    pod-template-hash=794bddb69b
+Annotations:        kubernetes.io/psp=eks.privileged
+Status:             Running
+IP:                 10.79.xxx.x
+Controlled By:      ReplicaSet/web1-794bddb69b
+Containers:
+  web1:
+    Container ID:   docker://db88c02944ce2c3ddbc5b7233269259a46c2b0b0a7b709cdf07203da
+    Image:          xxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/palm:1.0
+    Image ID:       docker-pullable://xxxxxxxx.dkr.ecr.us-east-1.amazonaws.com/palm@sha256:e0a788e004501d337ce259fc3f7d2f828f17a5ae054d927f522f4282bdaea5f2
+    Ports:          80/TCP, 8080/TCP
+    Host Ports:     0/TCP, 0/TCP
+    State:          Running
+      Started:      Thu, 17 Sep 2020 15:00:28 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-bmqzd (ro)
+Conditions:
+  Type              Status
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:
+  default-token-bmqzd:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-bmqzd
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:          <none>
+
+```
+
+
+<<<<<<< HEAD
 You can access the dashboard easily fro any computer with installed and configured `kubectl`:
 1) From coomand line start `kubectl proxy`
 2) Go to your browser and open [http://127.0.0.1:8001/ui](http://127.0.0.1:8001/ui)
@@ -97,3 +247,5 @@ Lets Start deploy application.
 
 kubectl create -f palm/pam.yml
 
+=======
+>>>>>>> 98ccecdf4f5297cbecd138ae954cfbc494b5459d
